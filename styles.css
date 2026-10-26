@@ -1,0 +1,224 @@
+/* June 2027 Travel Plan — styles.
+   Change the look here: colours and sizes are all variables in :root. */
+
+:root {
+  --bg: #ffffff;
+  --bg-soft: #f7f6f3;
+  --text: #1f1f1d;
+  --text-soft: #5f5e5a;
+  --border: #e6e4de;
+  --accent: #b4532a;
+  --accent-soft: #f9ece7;
+  --link: #2459a8;
+  --sidebar-w: 280px;
+  --content-w: 760px;
+  --radius: 8px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1b1b19;
+    --bg-soft: #242421;
+    --text: #ecebe6;
+    --text-soft: #a9a8a1;
+    --border: #3a3a36;
+    --accent: #e08a62;
+    --accent-soft: #3a2a22;
+    --link: #8db4f0;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 24px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+a { color: var(--link); }
+
+/* ---------- Layout ---------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 28px 20px 40px 24px;
+  background: var(--bg-soft);
+  border-right: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.sidebar .site-title {
+  display: block;
+  margin: 0 0 20px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.sidebar h2 {
+  margin: 22px 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar a {
+  display: block;
+  padding: 4px 10px;
+  margin: 1px 0;
+  border-left: 2px solid transparent;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--text-soft);
+  text-decoration: none;
+}
+
+.sidebar a:hover { color: var(--text); background: var(--border); }
+
+.sidebar a.active {
+  color: var(--accent);
+  font-weight: 600;
+  border-left-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+main {
+  width: 100%;
+  max-width: var(--content-w);
+  margin: 0 auto;
+  padding: 56px 32px 120px;
+}
+
+/* ---------- Typography ---------- */
+
+h1 { margin: 0 0 4px; font-size: 38px; line-height: 1.2; }
+h2 { margin: 64px 0 12px; font-size: 26px; line-height: 1.3; }
+h3 { margin: 44px 0 8px; font-size: 20px; line-height: 1.35; }
+
+h2, h3 { scroll-margin-top: 24px; }
+
+.byline { margin: 0 0 32px; color: var(--text-soft); font-size: 14px; }
+
+p { margin: 0 0 12px; }
+
+ul { margin: 0 0 14px; padding-left: 22px; }
+li { margin-bottom: 4px; }
+
+strong { font-weight: 650; }
+.label { font-weight: 650; }
+
+.note {
+  color: var(--text-soft);
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* ---------- Sections ---------- */
+
+.lead { color: var(--text-soft); }
+
+.country {
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.country h4 {
+  margin: 20px 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.jump {
+  padding: 12px 14px;
+  background: var(--bg-soft);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.jump a { margin-right: 4px; }
+
+/* ---------- Tables ---------- */
+
+.table-wrap { overflow-x: auto; margin: 12px 0 18px; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th, td {
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+  border: 1px solid var(--border);
+}
+
+th { background: var(--bg-soft); font-weight: 650; }
+
+/* ---------- Mobile ---------- */
+
+.menu-toggle {
+  display: none;
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 20;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+
+  .menu-toggle { display: block; }
+
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(300px, 86vw);
+    z-index: 10;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+  }
+
+  .sidebar.open { transform: none; box-shadow: 0 0 40px rgba(0, 0, 0, 0.25); }
+
+  main { padding: 64px 16px 96px; }
+
+  h1 { font-size: 30px; }
+}
