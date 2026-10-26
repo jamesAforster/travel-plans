@@ -21,7 +21,7 @@ function setActive(id) {
   const top = link.offsetTop;
   const { scrollTop, clientHeight } = sidebar;
   if (top < scrollTop + 40 || top > scrollTop + clientHeight - 60) {
-    sidebar.scrollTo({ top: top - clientHeight / 3, behavior: "smooth" });
+    sidebar.scrollTo({ top: top - clientHeight / 3, behavior: "auto" });
   }
 }
 
