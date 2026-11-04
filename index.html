@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Juanita June 2027 Travel Plan</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <button class="menu-toggle" aria-expanded="false" aria-controls="sidebar">Menu</button>
+  <header class="topbar">
+    <a class="topbar-title" href="#top">Juanita June 2027 Travel Plan</a>
+    <button class="menu-toggle" aria-expanded="false" aria-controls="sidebar">Menu</button>
+  </header>
+  <div class="backdrop" hidden></div>
 
   <div class="layout">
     <nav class="sidebar" id="sidebar" aria-label="Sections">
@@ -59,7 +63,7 @@
       <h2 id="ranking">Ranking</h2>
       <p>My love my life my language my light! Here are some plans and ideas for our beautiful adventure next year. Have a look and see what you think. I cannot wait to do this with you.</p>
       <div class="table-wrap">
-        <table>
+        <table class="stack">
           <thead>
             <tr><th>Rank</th><th>Option</th><th>Per person</th><th>Why it ranks here</th><th>Main risk</th></tr>
           </thead>

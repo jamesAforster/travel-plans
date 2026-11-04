@@ -12,6 +12,7 @@
   --link: #2459a8;
   --sidebar-w: 280px;
   --content-w: 760px;
+  --topbar-h: 52px;
   --radius: 8px;
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
@@ -32,6 +33,8 @@
 * { box-sizing: border-box; }
 
 html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   /* Links jump straight to the section. Add "scroll-behavior: smooth;" here to animate instead. */
   scroll-padding-top: 24px;
 }
@@ -110,10 +113,16 @@ a { color: var(--link); }
 
 main {
   width: 100%;
+  min-width: 0;
   max-width: var(--content-w);
   margin: 0 auto;
   padding: 56px 32px 120px;
+  overflow-wrap: break-word;
 }
+
+/* Phone-only pieces are hidden on larger screens. */
+.topbar,
+.backdrop { display: none; }
 
 /* ---------- Typography ---------- */
 
@@ -184,41 +193,171 @@ th, td {
 
 th { background: var(--bg-soft); font-weight: 650; }
 
-/* ---------- Mobile ---------- */
-
-.menu-toggle {
-  display: none;
-  position: fixed;
-  top: 12px;
-  right: 12px;
-  z-index: 20;
-  padding: 8px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
-  color: var(--text);
-  font: inherit;
-  font-size: 14px;
-  cursor: pointer;
-}
+/* ---------- Tablet and phone ---------- */
 
 @media (max-width: 860px) {
-  .layout { grid-template-columns: 1fr; }
+  html { scroll-padding-top: calc(var(--topbar-h) + 12px); }
 
-  .menu-toggle { display: block; }
+  .layout { grid-template-columns: minmax(0, 1fr); }
 
+  /* Top bar with the menu button. */
+  .topbar {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: calc(var(--topbar-h) + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topbar-title {
+    overflow: hidden;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .menu-toggle {
+    flex: none;
+    min-height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+    color: var(--text);
+    font: inherit;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  /* Sidebar becomes a slide-in drawer over the page. */
   .sidebar {
     position: fixed;
     inset: 0 auto 0 0;
-    width: min(300px, 86vw);
-    z-index: 10;
+    z-index: 40;
+    width: min(320px, 86vw);
+    height: 100%;
+    padding: calc(20px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+    font-size: 16px;
+    overscroll-behavior: contain;
     transform: translateX(-100%);
-    transition: transform 0.2s ease;
+    visibility: hidden;
+    transition: transform 0.2s ease, visibility 0s linear 0.2s;
   }
 
-  .sidebar.open { transform: none; box-shadow: 0 0 40px rgba(0, 0, 0, 0.25); }
+  .sidebar.open {
+    transform: none;
+    visibility: visible;
+    transition: transform 0.2s ease;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+  }
 
-  main { padding: 64px 16px 96px; }
+  /* Bigger tap targets in the drawer. */
+  .sidebar a { padding: 10px 12px; }
 
-  h1 { font-size: 30px; }
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  .backdrop:not([hidden]) { display: block; }
+
+  body.nav-open { overflow: hidden; }
+
+  main {
+    padding:
+      calc(var(--topbar-h) + env(safe-area-inset-top) + 24px)
+      max(16px, env(safe-area-inset-right))
+      calc(72px + env(safe-area-inset-bottom))
+      max(16px, env(safe-area-inset-left));
+  }
+
+  h1 { font-size: 28px; }
+  h2 { margin-top: 48px; font-size: 22px; }
+  h3 { margin-top: 36px; font-size: 19px; }
+  h2, h3 { scroll-margin-top: 8px; }
+
+  .jump { line-height: 2; }
+  .jump a { display: inline-block; margin-right: 6px; }
+
+  /* Wide tables scroll sideways inside their own box instead of stretching the page. */
+  .table-wrap {
+    margin-inline: -16px;
+    padding-inline: 16px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-wrap table { min-width: 560px; }
+
+  /* Keep the row labels in view while the rest of the table scrolls sideways. */
+  .table-wrap table:not(.stack) th:first-child,
+  .table-wrap table:not(.stack) td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--bg);
+  }
+
+  .table-wrap table:not(.stack) th:first-child { background: var(--bg-soft); }
+
+  /* The ranking table turns into one card per option. Labels come from the
+     column headings (see script.js). */
+  .table-wrap:has(table.stack) {
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+
+  table.stack { min-width: 0; }
+
+  table.stack,
+  table.stack tbody,
+  table.stack tr,
+  table.stack td { display: block; width: 100%; }
+
+  table.stack thead {
+    position: absolute;
+    left: -9999px;
+  }
+
+  table.stack tr {
+    margin-bottom: 12px;
+    padding: 6px 0;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  table.stack td {
+    padding: 6px 14px;
+    border: 0;
+  }
+
+  table.stack td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+  }
+
+  table.stack td[data-label="Rank"] {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  table.stack td[data-label="Rank"]::before { display: inline; }
+  table.stack td[data-label="Rank"]::before { content: "Rank "; }
 }
